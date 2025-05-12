@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Tonny's Portfolio - Web Developer specializing in frontend & backend development">
+  <title>Tonny's Portfolio | Web Developer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Dark Mode Toggle -->
+  <button id="darkModeToggle" class="dark-mode-toggle">
+    <i class="fas fa-moon"></i>
+  </button>
+
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header / Hero -->
+  <header class="hero">
+    <h1>Hello, I'm Tonny</h1>
+    <p>A Web Developer passionate about building impactful websites.</p>
+  </header>
+
+  <!-- About Section -->
+  <section id="about">
+    <h2>About Me</h2>
+    <p>I specialize in frontend & backend development using HTML, CSS, JS, and PHP.</p>
+    
+    <div class="skills-container">
+      <h3>My Skills</h3>
+      <div class="skills-grid">
+        <div class="skill-item">
+          <i class="fab fa-html5"></i>
+          <span>HTML5</span>
+        </div>
+        <div class="skill-item">
+          <i class="fab fa-css3-alt"></i>
+          <span>CSS3</span>
+        </div>
+        <div class="skill-item">
+          <i class="fab fa-js"></i>
+          <span>JavaScript</span>
+        </div>
+        <div class="skill-item">
+          <i class="fab fa-php"></i>
+          <span>PHP</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects">
+    <h2>Projects</h2>
+    
+    <div class="project-filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="php">PHP</button>
+      <button class="filter-btn" data-filter="js">JavaScript</button>
+      <button class="filter-btn" data-filter="fullstack">Full Stack</button>
+    </div>
+    
+    <div class="projects-grid">
+      <div class="project-card" data-category="php" style="--order: 1;">
+        <h3>Student Registration System</h3>
+        <p>PHP-based system for managing student enrollments.</p>
+      </div>
+      <div class="project-card" data-category="php" style="--order: 2;">
+        <h3>Simple Blog CMS</h3>
+        <p>Blog platform with admin login, CRUD, and comments.</p>
+      </div>
+      <div class="project-card" data-category="fullstack" style="--order: 3;">
+        <h3>Event Registration Site</h3>
+        <p>Built with PHP/MySQL — includes validation and user registration.</p>
+      </div>
+      <div class="project-card" data-category="js" style="--order: 4;">
+        <h3>To-Do Web App</h3>
+        <p>Session-based task management tool using PHP and JS.</p>
+      </div>
+      <div class="project-card" data-category="fullstack" style="--order: 5;">
+        <h3>Mini E-commerce Page</h3>
+        <p>Interactive catalog with JS cart and PHP checkout form.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CV Download -->
+  <div class="cv-container">
+    <a href="assets/TonnyAxels_CV.pdf" download class="cv-button">
+      <i class="fas fa-download"></i> Download My CV
+    </a>
+  </div>
+
+  <!-- Contact Section -->
+  <section id="contact">
+    <h2>Contact Me</h2>
+    <form action="contact.php" method="POST">
+      <input type="text" name="name" placeholder="Your Name" required />
+      <input type="email" name="email" placeholder="Your Email" required />
+      <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+      <button type="submit">Send Message</button>
+    </form>
+    <p class="status-message <?php if (isset($_GET['status'])) echo $_GET['status']; ?>">
+      <?php 
+      if (isset($_GET['message'])) {
+          echo htmlspecialchars($_GET['message']);
+      }
+      ?>
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="social-links">
+      <a href="#"><i class="fab fa-github"></i></a>
+      <a href="#"><i class="fab fa-linkedin"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </div>
+    <p>&copy; 2025 TonnyAxels. All rights reserved.</p>
+  </footer>
+
+  <!-- Project Modal -->
+  <div id="projectModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+      <div class="modal-footer">
+        <a href="#" id="modalLink" class="modal-btn">View Project</a>
+        <button class="modal-btn close-modal-btn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const body = document.body;
+
+    if (localStorage.getItem('darkMode') === 'enabled') {
+      body.classList.add('dark-mode');
+      darkModeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+
+    darkModeToggle.addEventListener('click', function() {
+      body.classList.toggle('dark-mode');
+      
+      if (body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+        this.innerHTML = '<i class="fas fa-sun"></i>';
+      } else {
+        localStorage.setItem('darkMode', 'disabled');
+        this.innerHTML = '<i class="fas fa-moon"></i>';
+      }
+    });
+
+    // Project Filtering
+    document.addEventListener('DOMContentLoaded', function() {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const projectCards = document.querySelectorAll('.project-card');
+      
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          
+          const filter = this.dataset.filter;
+          
+          projectCards.forEach(card => {
+            if (filter === 'all' || card.dataset.category === filter) {
+              card.style.display = 'block';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      // Project Modal
+      const modal = document.getElementById('projectModal');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalDescription = document.getElementById('modalDescription');
+      const modalLink = document.getElementById('modalLink');
+      const closeModalElements = document.querySelectorAll('.close-modal, .close-modal-btn');
+
+      projectCards.forEach(card => {
+        card.addEventListener('click', function() {
+          const title = this.querySelector('h3').textContent;
+          const description = this.querySelector('p').textContent;
+          
+          modalTitle.textContent = title;
+          modalDescription.textContent = description;
+          modalLink.href = '#'; // Set actual project link here
+          
+          modal.style.display = 'block';
+          document.body.style.overflow = 'hidden';
+        });
+      });
+
+      closeModalElements.forEach(element => {
+        element.addEventListener('click', function() {
+          modal.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        });
+      });
+
+      window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+          document.body.style.overflow = 'auto';
+        }
+      });
+
+      // Form Validation
+      document.querySelector("form").addEventListener("submit", function (e) {
+        const name = document.querySelector("[name='name']").value.trim();
+        const email = document.querySelector("[name='email']").value.trim();
+        const message = document.querySelector("[name='message']").value.trim();
+        const emailRegex = /^[^@]+@[^@]+\.[a-z]{2,}$/i;
+
+        if (name === "" || email === "" || message === "") {
+          alert("Please fill in all fields.");
+          e.preventDefault();
+          return;
+        }
+
+        if (!emailRegex.test(email)) {
+          alert("Please enter a valid email address.");
+          e.preventDefault();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
